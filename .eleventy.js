@@ -10,51 +10,73 @@ module.exports = function (eleventyConfig) {
   // Merge data instead of overriding
   eleventyConfig.setDataDeepMerge(true);
 
-  // human readable date
+  // Human readable date filter
   eleventyConfig.addFilter("readableDate", (dateObj) => {
-    return DateTime.fromJSDate(dateObj, { zone: "utc" }).toFormat(
-      "dd LLL yyyy"
-    );
+    if (!dateObj) return "";
+    const d = dateObj instanceof Date ? dateObj : new Date(dateObj);
+    return DateTime.fromJSDate(d, { zone: "utc" }).toFormat("dd LLL yyyy");
+  });
+
+  // Generic date(format) filter so templates can use | date("MMM d, yyyy")
+  eleventyConfig.addFilter("date", (dateObj, format = "dd LLL yyyy") => {
+    if (!dateObj) return "";
+    const d = dateObj instanceof Date ? dateObj : new Date(dateObj);
+    return DateTime.fromJSDate(d, { zone: "utc" }).toFormat(format);
   });
 
   // Syntax Highlighting for Code blocks
   eleventyConfig.addPlugin(syntaxHighlight);
 
-  // To Support .yaml Extension in _data
-  // You may remove this if you can use JSON
+  // Support .yaml in _data
   eleventyConfig.addDataExtension("yaml", (contents) => yaml.load(contents));
 
-  // Copy Static Files to /_Site
-  eleventyConfig.addPassthroughCopy({
-    "./src/admin/config.yml": "./admin/config.yml",
-    "./node_modules/alpinejs/dist/cdn.min.js": "./static/js/alpine.js",
-    "./node_modules/prismjs/themes/prism-tomorrow.css":
-      "./static/css/prism-tomorrow.css",
+  // ---------- Collections ----------
+  function byDateDesc(a, b) {
+    const aDate = a.date || a.data.date;
+    const bDate = b.date || b.data.date;
+    return (bDate ? new Date(bDate) : 0) - (aDate ? new Date(aDate) : 0);
+  }
+
+  eleventyConfig.addCollection("posts", (collection) => {
+    return collection.getFilteredByGlob("src/posts/*.md").sort(byDateDesc);
   });
 
-  // Copy Image Folder to /_site
-  eleventyConfig.addPassthroughCopy("./src/static/img");
+  eleventyConfig.addCollection("recentPosts", (collection) => {
+    return collection.getFilteredByGlob("src/posts/*.md").sort(byDateDesc);
+  });
 
-  // Copy favicon to route of /_site
+  eleventyConfig.addCollection("featuredPosts", (collection) => {
+    const all = collection.getFilteredByGlob("src/posts/*.md").sort(byDateDesc);
+    const featured = all.filter((p) => p.data && p.data.featured === true);
+    return (featured.length ? featured : all).slice(0, 4);
+  });
+  // ---------------------------------
+
+  // Treat the whole CMS admin folder as static (no Nunjucks parsing)
+  eleventyConfig.addPassthroughCopy("./src/admin");
+  eleventyConfig.ignores.add("src/admin/**");
+
+  // Copy other static assets
+  eleventyConfig.addPassthroughCopy({
+    "./node_modules/alpinejs/dist/cdn.min.js": "./static/js/alpine.js",
+    "./node_modules/prismjs/themes/prism-tomorrow.css": "./static/css/prism-tomorrow.css",
+  });
+  eleventyConfig.addPassthroughCopy("./src/static/img");
   eleventyConfig.addPassthroughCopy("./src/favicon.ico");
 
   // Minify HTML
   eleventyConfig.addTransform("htmlmin", function (content, outputPath) {
-    // Eleventy 1.0+: use this.inputPath and this.outputPath instead
-    if (outputPath.endsWith(".html")) {
-      let minified = htmlmin.minify(content, {
+    if (outputPath && outputPath.endsWith(".html")) {
+      return htmlmin.minify(content, {
         useShortDoctype: true,
         removeComments: true,
         collapseWhitespace: true,
       });
-      return minified;
     }
-
     return content;
   });
 
-  // Let Eleventy transform HTML files as nunjucks
-  // So that we can use .html instead of .njk
+  // Treat .html as Nunjucks so you can write .html templates
   return {
     dir: {
       input: "src",

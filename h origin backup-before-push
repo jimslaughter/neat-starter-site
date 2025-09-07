@@ -1,0 +1,27 @@
+* [33md543dc1[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmain[m[33m, [m[1;32mbackup-before-push[m[33m)[m Add Netlify build configuration
+*   [33mf664204[m[33m ([m[1;31mupstream/master[m[33m)[m Merge pull request #25 from wiredacorn/compare
+[32m|[m[33m\[m  
+[32m|[m * [33mb54fe9c[m fix browsersync issue
+[32m|[m[32m/[m  
+* [33m6d5d83e[m[33m ([m[1;33mtag: [m[1;33m1.1.1[m[33m)[m update gitignore
+* [33m1cf55bd[m change to tailwindcli
+*   [33m53d67ae[m[33m ([m[1;33mtag: [m[1;33m1.1.0[m[33m)[m Merge pull request #19 from shouhu21/update-dependencies
+[34m|[m[35m\[m  
+[34m|[m * [33mccc38a9[m update tailwind.config
+[34m|[m * [33mee4824c[m fix error with yaml.safeLoad
+[34m|[m * [33m5c58f6f[m update dependencies
+* [35m|[m   [33me5ef128[m Merge pull request #21 from surjithctly/alpine-issue
+[35m|[m[1;31m\[m [35m\[m  
+[35m|[m [1;31m|[m[35m/[m  
+[35m|[m[35m/[m[1;31m|[m   
+[35m|[m * [33m94399c8[m Fix Alpine.js click away issue
+[35m|[m[35m/[m  
+*   [33m0c30e53[m Merge pull request #16 from rodrigoescandon/master
+[1;32m|[m[1;33m\[m  
+[1;32m|[m * [33m49cf1e8[m Updated to alpine.js version 3.
+* [1;33m|[m   [33m0cb41c3[m Merge pull request #15 from ZeroSpree/patch-1
+[1;33m|[m[1;35m\[m [1;33m\[m  
+[1;33m|[m [1;35m|[m[1;33m/[m  
+[1;33m|[m[1;33m/[m[1;35m|[m   
+[1;33m|[m * [33m435cbe9[m Remove duplicated .gitignore entry
+[1;33m|[m[1;33m/[m  
