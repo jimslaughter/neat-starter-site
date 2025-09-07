@@ -10,4 +10,4 @@ Revised first post on Sun 07-Sep-2025 10:12 AM.  This is going to be great for w
 
 
 
-!\[jimwithdeer]src/static/img/jimwithdeerjapan.jpg
+![](/static/img/jimwithdeerjapan.jpg)
