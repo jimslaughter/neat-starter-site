@@ -44,5 +44,40 @@
         src="https://identity.netlify.com/v1/netlify-identity-widget.js"
       ></script>
     {% endif %}
+    <script>
+(function () {
+  function loadIdentity(cb){
+    var s = document.createElement('script');
+    s.src = 'https://identity.netlify.com/v1/netlify-identity-widget.js';
+    s.onload = cb;
+    document.head.appendChild(s);
+  }
+
+  var needsIdentity =
+    location.pathname.startsWith('/admin') ||
+    location.hash.indexOf('recovery_token') !== -1;
+
+  if (needsIdentity) {
+    loadIdentity(function () {
+      if (window.netlifyIdentity) {
+        window.netlifyIdentity.init();
+        // If we came here with a recovery token, trigger the recovery flow
+        if (location.hash.indexOf('recovery_token') !== -1) {
+          window.netlifyIdentity.on('init', function () {
+            window.netlifyIdentity.recover(location.hash);
+          });
+        }
+        // Optional: send users to /admin after login
+        window.netlifyIdentity.on('login', function () {
+          if (!location.pathname.startsWith('/admin')) {
+            document.location.href = '/admin/';
+          }
+        });
+      }
+    });
+  }
+})();
+</script>
+
   </body>
 </html>
