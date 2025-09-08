@@ -16,6 +16,8 @@ tags:
 
 ###### This is a Heading h6
 
+![Us in Boston](/static/img/033.jpg "Our gang in Boston")
+
 ## Emphasis
 
 *This text will be italic*\
@@ -58,3 +60,7 @@ You may be using [Markdown Live Preview](https://markdownlivepreview.com/).
 ## Inline code
 
 This web site is using `markedjs/marked`.
+
+![]()
+
+![]()
