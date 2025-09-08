@@ -3,7 +3,9 @@
 [build]
   command = "npm run build"
   publish = "_site"
-
+[build.environment]
+  NODE_VERSION = "18"
+  
 # Local development with `netlify dev`
 [dev]
   command = "npm start"

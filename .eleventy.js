@@ -54,7 +54,7 @@ module.exports = function (eleventyConfig) {
 
   // Treat the whole CMS admin folder as static (no Nunjucks parsing)
   eleventyConfig.addPassthroughCopy("./src/admin");
-  eleventyConfig.ignores.add("src/admin/**");
+  //eleventyConfig.ignores.add("src/admin/**");
 
   // Copy other static assets
   eleventyConfig.addPassthroughCopy({
@@ -88,6 +88,4 @@ module.exports = function (eleventyConfig) {
 
 
 // Copy the whole Admin app as static files
-eleventyConfig.addPassthroughCopy("./src/admin");
-// (Optional extra belt): don't render it
-eleventyConfig.ignores.add("src/admin/**");
+//eleventyConfig.addPassthroughCopy("./src/admin");
