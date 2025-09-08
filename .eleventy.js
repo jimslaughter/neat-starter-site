@@ -84,3 +84,10 @@ module.exports = function (eleventyConfig) {
     htmlTemplateEngine: "njk",
   };
 };
+
+
+
+// Copy the whole Admin app as static files
+eleventyConfig.addPassthroughCopy("./src/admin");
+// (Optional extra belt): don't render it
+eleventyConfig.ignores.add("src/admin/**");

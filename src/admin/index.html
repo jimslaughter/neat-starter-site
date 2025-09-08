@@ -1,93 +1,17 @@
----
-layout: default.html
-title: Home
-description: Latest from the blog
----
-
-<section class="container mx-auto px-4 py-10">
-  <!-- Page heading -->
-  <header class="mb-8">
-    <h1 class="text-2xl md:text-3xl font-semibold tracking-tight">Latest Posts</h1>
-    {% if settings and settings.desc %}
-      <p class="mt-2 text-sm opacity-80">{{ settings.desc }}</p>
-    {% endif %}
-  </header>
-
-  <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-    <!-- Main column: Featured grid -->
-    <div class="lg:col-span-2">
-      <h2 class="text-xl font-semibold mb-4">Featured</h2>
-
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {% for post in collections.featuredPosts %}
-          <article class="rounded-2xl shadow p-5 hover:shadow-md transition">
-            <h3 class="text-lg md:text-xl font-serif leading-snug">
-              <a href="{{ post.url | url }}" class="hover:underline">
-                {{ post.data.title }}
-              </a>
-            </h3>
-
-            {% if post.data.date %}
-              <p class="text-xs md:text-sm opacity-70 mt-1">
-                {{ post.date | readableDate }}
-              </p>
-            {% endif %}
-
-            {% if post.data.description %}
-              <p class="mt-3 text-sm leading-relaxed">
-                {{ post.data.description }}
-              </p>
-            {% endif %}
-
-            <div class="mt-4">
-              <a href="{{ post.url | url }}" class="text-sm underline">Read more →</a>
-            </div>
-          </article>
-        {% endfor %}
-      </div>
-    </div>
-
-    <!-- Sidebar: Recent list -->
-    <aside class="lg:col-span-1">
-      <h2 class="text-xl font-semibold mb-4">Recent Posts</h2>
-      <ul class="space-y-3">
-        {% for post in collections.recentPosts | slice(0, 10) %}
-          <li class="leading-snug">
-            <a href="{{ post.url | url }}" class="hover:underline">
-              {{ post.data.title }}
-            </a>
-            {% if post.data.date %}
-              <div class="text-xs opacity-70">
-                {{ post.date | date("MMM d, yyyy") }}
-              </div>
-            {% endif %}
-          </li>
-        {% endfor %}
-      </ul>
-    </aside>
-  </div>
-
-  <!-- Optional: “All posts” section -->
-  <div class="mt-12">
-    <h2 class="text-xl font-semibold mb-4">All Posts</h2>
-    <ul class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      {% for post in collections.posts %}
-        <li class="rounded-2xl border p-5 hover:shadow-sm transition">
-          <a href="{{ post.url | url }}" class="block">
-            <h3 class="font-serif text-lg leading-snug hover:underline">
-              {{ post.data.title }}
-            </h3>
-            {% if post.data.description %}
-              <p class="mt-2 text-sm opacity-90">{{ post.data.description }}</p>
-            {% endif %}
-            {% if post.data.date %}
-              <p class="mt-2 text-xs opacity-70">
-                {{ post.date | date("MMM d, yyyy") }}
-              </p>
-            {% endif %}
-          </a>
-        </li>
-      {% endfor %}
-    </ul>
-  </div>
-</section>
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="x-ua-compatible" content="ie=edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <!-- Optional: CMS CSS (Decap CMS includes basic styles); safe to skip -->
+  <link rel="stylesheet" href="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.css" />
+  <title>Content Manager</title>
+</head>
+<body>
+  <!-- Load the CMS app -->
+  <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
+  <!-- Optional: register preview templates here if you want -->
+  <!-- <script>CMS.registerPreviewTemplate('blog', MyPreview)</script> -->
+</body>
+</html>
