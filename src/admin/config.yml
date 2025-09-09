@@ -1,16 +1,28 @@
 backend:
-  # Use netlify identity as backend
-  name: git-gateway
+  name: github
+  repo: jimslaughter/neat-starter-site
   branch: main
-  ### enable below lines for github integration ###
-  # name: github
-  # repo: surjithctly/neat-starter
+  base_url: https://neat-starter-site.pages.dev
+  auth_endpoint: /api/auth
+
 media_folder: "src/static/img"
 public_folder: "/static/img"
-
-# Please run "npx netlify-cms-proxy-server" for local backend
 local_backend: true
+
+# Use the proxy when editing locally so you can log in without OAuth
+#   Terminal A: npx netlify-cms-proxy-server
+#   Terminal B: npm start  →  http://localhost:8080/admin
+local_backend: true
+
+# Uncomment if you want Draft → Review → Publish workflow in CMS
 # publish_mode: editorial_workflow
+
+# Optional: safer slugs for filenames/paths
+slug:
+  encoding: "unicode"
+  clean_accents: true
+  sanitize_replacement: "-"
+
 collections:
   - label: "Blog"
     name: "blog"
@@ -18,18 +30,24 @@ collections:
     create: true
     editor:
       preview: false
+    # Filenames will follow the slug (title → slug)
+    slug: "{{slug}}"
     fields:
       - { label: "Title", name: "title", widget: "string" }
-      - { label: "Description", name: "description", widget: "string" }
-      - { label: "Author", name: "author", widget: "string" }
+      - { label: "Description", name: "description", widget: "string", required: false }
+      - { label: "Author", name: "author", widget: "string", required: false }
       - { label: "Publish Date", name: "date", widget: "datetime" }
+      - { label: "Featured", name: "featured", widget: "boolean", required: false, default: false }
+      - { label: "Draft (don’t publish)", name: "draft", widget: "boolean", required: false, default: false }
+      - { label: "Thumbnail", name: "image", widget: "image", required: false }
       - { label: "Body", name: "body", widget: "markdown" }
-      - widget: select
-        label: "tags"
+      - label: "Tags"
         name: "tags"
-        multiple: true
-        create: true
-        options: ["Tags", "created", "from", "config.yml"]
+        widget: "list"
+        allow_add: true
+        default: ["post"]
+        required: false
+
   - label: "Settings"
     name: "settings"
     editor:
@@ -39,30 +57,32 @@ collections:
         name: "items"
         file: "src/_data/navigation.yaml"
         fields:
-          - label: Nav Items
+          - label: "Nav Items"
             name: items
             widget: list
             allow_add: false
             collapsed: false
             fields:
-              - { label: Title, name: text, widget: string }
-              - { label: URL, name: url, widget: string }
+              - { label: "Title", name: text, widget: string }
+              - { label: "URL", name: url, widget: string }
+
       - label: "Quick Links"
         name: "links"
         file: "src/_data/quicklinks.yaml"
         fields:
-          - label: Nav Items
+          - label: "Nav Items"
             name: links
             widget: list
             collapsed: false
             fields:
-              - { label: Title, name: title, widget: string }
-              - { label: URL, name: url, widget: string }
-              - { label: Description, name: desc, widget: string }
+              - { label: "Title", name: title, widget: string }
+              - { label: "URL", name: url, widget: string }
+              - { label: "Description", name: desc, widget: string }
+
       - label: "Meta Settings"
-        name: "settings"
+        name: "meta"
         file: "src/_data/settings.yaml"
         fields:
-          - { label: Name, name: name, widget: string }
-          - { label: Author, name: author, widget: string }
-          - { label: URL, name: url, widget: string }
+          - { label: "Name", name: name, widget: string }
+          - { label: "Author", name: author, widget: string }
+          - { label: "URL", name: url, widget: string }
