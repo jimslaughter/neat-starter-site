@@ -12,7 +12,7 @@ local_backend: true
 # Use the proxy when editing locally so you can log in without OAuth
 #   Terminal A: npx netlify-cms-proxy-server
 #   Terminal B: npm start  →  http://localhost:8080/admin
-local_backend: true
+# local_backend: true
 
 # Uncomment if you want Draft → Review → Publish workflow in CMS
 # publish_mode: editorial_workflow
