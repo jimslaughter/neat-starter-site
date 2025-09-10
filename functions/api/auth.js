@@ -1,5 +1,5 @@
 // functions/api/auth.js
-// Cloudflare Pages Function for Decap CMS GitHub OAuth with postMessage callback
+// Cloudflare Pages Function for Decap CMS GitHub OAuth with correct postMessage
 
 export async function onRequest(context) {
   const { request, env } = context;
@@ -9,14 +9,12 @@ export async function onRequest(context) {
 
   const url = new URL(request.url);
 
-  // Step 1: redirect user to GitHub authorize page (popup window)
+  // 1) Start OAuth: redirect to GitHub
   if (url.pathname.endsWith("/auth") && !url.searchParams.get("code")) {
     const redirectUri = `${url.origin}/api/auth/callback`;
-    const scope = "public_repo user:email"; // use "repo user:email" if the repo is private
+    const scope = "public_repo user:email"; // use "repo user:email" if the repo becomes private
 
-    if (!env.OAUTH_CLIENT_ID) {
-      return new Response("Missing OAuth client ID", { status: 500 });
-    }
+    if (!env.OAUTH_CLIENT_ID) return new Response("Missing OAuth client ID", { status: 500 });
 
     const authUrl =
       `${GITHUB_AUTHORIZE_URL}?client_id=${encodeURIComponent(env.OAUTH_CLIENT_ID)}` +
@@ -26,17 +24,13 @@ export async function onRequest(context) {
     return Response.redirect(authUrl, 302);
   }
 
-  // Step 2: GitHub callback with ?code=...
+  // 2) GitHub callback -> exchange code, then postMessage result
   if (url.pathname.endsWith("/auth/callback")) {
     const code = url.searchParams.get("code");
-    if (!code) {
-      return htmlPostMessage({ error: "missing_code" }, false);
-    }
-    if (!env.OAUTH_CLIENT_ID || !env.OAUTH_CLIENT_SECRET) {
+    if (!code) return htmlPostMessage({ error: "missing_code" }, false);
+    if (!env.OAUTH_CLIENT_ID || !env.OAUTH_CLIENT_SECRET)
       return htmlPostMessage({ error: "missing_oauth_env" }, false);
-    }
 
-    // Exchange code for access token
     const tokenResp = await fetch(GITHUB_TOKEN_URL, {
       method: "POST",
       headers: { Accept: "application/json" },
@@ -46,13 +40,13 @@ export async function onRequest(context) {
         code,
       }),
     });
-    const data = await tokenResp.json();
 
+    const data = await tokenResp.json();
     if (!tokenResp.ok || data.error || !data.access_token) {
       return htmlPostMessage({ error: "oauth_exchange_failed", details: data }, false);
     }
 
-    // SUCCESS: signal Decap in the opener window and close the popup
+    // Success: send token to opener (Decap CMS)
     const payload = {
       token: data.access_token,
       provider: "github",
@@ -65,17 +59,17 @@ export async function onRequest(context) {
   return new Response("Not found", { status: 404, headers: { "Cache-Control": "no-store" } });
 }
 
-// Return a tiny HTML page that posts a message back to the opener and closes the window.
-// Decap listens for `authorization:github:success:<json>` or `authorization:github:error:<json>`.
+// Tiny HTML page that posts the result and closes the popup
 function htmlPostMessage(obj, success) {
   const channel = success ? "authorization:github:success" : "authorization:github:error";
-  const json = JSON.stringify(obj).replace(/</g, "\\u003c"); // avoid </script> issues
+  // Embed JSON directly (unquoted) so Decap parses it correctly
+  const jsonLiteral = JSON.stringify(obj).replace(/</g, "\\u003c");
   const body = `<!doctype html>
 <html><body>
 <script>
   (function () {
     try {
-      var msg = "${channel}:" + ${JSON.stringify(json)};
+      var msg = "${channel}:" + ${jsonLiteral};
       if (window.opener && typeof window.opener.postMessage === "function") {
         window.opener.postMessage(msg, "*");
       }
