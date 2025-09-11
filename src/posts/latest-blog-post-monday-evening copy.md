@@ -9,3 +9,7 @@ tags:
   - post
 ---
 This is a quick update to see how everything is working. Still working on getting the admin to work.  
+
+Here is a photo: 
+
+![Us in Boston](/static/img/033.jpg "Our gang in Boston")
